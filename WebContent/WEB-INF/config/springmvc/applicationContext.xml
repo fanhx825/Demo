@@ -25,4 +25,24 @@
 	<bean id="userDao" class="mvc.spring.dao.impl.UserDaoImpl">
 		<property name="namedParameterJdbcTemplate" ref="namedJdbcTemplate" />
 	</bean>
+	<bean id="shiroDbRealm" class="mvc.spring.service.ShiroDbRealm">
+		<property name="userDao" ref="userDao" />
+	</bean>
+	<!-- shiro配置 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="shiroDbRealm" />
+	</bean>
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login.jsp" />
+		<property name="successUrl" value="/index.jsp" />
+		<property name="unauthorizedUrl" value="/login.do" />
+		<property name="filterChainDefinitions">
+			<value> 
+				/login.jsp = anon 
+				/login* = anon 
+				/** = authc
+			</value>
+		</property>
+	</bean>
 </beans>
